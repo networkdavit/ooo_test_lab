@@ -1,43 +1,31 @@
-def serialize_set(int_set):
-    serialized = ""
-    for num in sorted(int_set):
-        serialized += str(len(str(num))) + str(num)
-    return serialized
+function serialize(nums) {
+  return nums.join(',');
+}
 
-def deserialize_set(serialized_str):
-    int_set = set()
-    i = 0
-    while i < len(serialized_str):
-        num_len = int(serialized_str[i])
-        i += 1
-        int_set.add(int(serialized_str[i:i + num_len]))
-        i += num_len
-    return int_set
+function deserialize(str) {
+  return str.split(',').map(Number);
+}
 
-def compression_ratio(original, compressed):
-    return len(compressed) / len(original)
+//TC
+const tests = [
+  [1, 2, 3],            // Short test
+  Array.from({length: 50}, () => Math.floor(Math.random() * 300) + 1),  // Random - 50 numbers
+  Array.from({length: 100}, () => Math.floor(Math.random() * 300) + 1), // Random - 100 numbers
+  Array.from({length: 500}, () => Math.floor(Math.random() * 300) + 1), // Random - 500 numbers
+  Array.from({length: 1000}, () => Math.floor(Math.random() * 300) + 1), // Random - 1000 numbers
+  Array.from({length: 10}, (_, index) => index + 1), // Boundary - all numbers of 1 digit
+  Array.from({length: 90}, (_, index) => index + 10), // Boundary - all numbers of 2 digits
+  Array.from({length: 200}, (_, index) => index + 100), // Boundary - all numbers of 3 digits
+  Array.from({length: 900}, (_, index) => (index % 300) + 1) // 3 of each number - 900 numbers in total
+];
 
-tests = [
-    {1},  
-    {3, 1, 4, 1, 5, 9, 2, 6},  
-    set(range(1, 51)),  
-    set(range(1, 101)),  
-    set(range(1, 501)),  
-    set(range(1, 1001)),  
-    set(range(1, 10)), 
-    set(range(10, 100)),  
-    set(range(100, 300)), 
-    set([i % 300 + 1 for i in range(900)])  
-]
+tests.forEach((test, index) => {
+  const originalString = JSON.stringify(test);
+  const compressedString = serialize(test);
+  const compressionRatio = (compressedString.length / originalString.length) * 100;
 
-for test_set in tests:
-    original_str = serialize_set(test_set)
-    deserialized_set = deserialize_set(original_str)
-    compression_ratio_val = compression_ratio(original_str, original_str)
-    
-    print("Original Set:", test_set)
-    print("Original String:", original_str)
-    print("Deserialized Set:", deserialized_set)
-    print("Compression Ratio:", compression_ratio_val)
-    print("\n")
-
+  console.log(`Test ${index + 1}:`);
+  console.log(`Original: ${originalString}`);
+  console.log(`Compressed: ${compressedString}`);
+  console.log(`Compression Ratio: ${compressionRatio.toFixed(2)}%\n`);
+});
